@@ -1,10 +1,42 @@
-'use client';
-
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Navbar from '@/components/Navbar';
-import styles from '../login/login.module.css'; // Reuse login styles
+import { supabase } from '@/lib/supabase';
+import styles from '../login/login.module.css';
 
 export default function SignupPage() {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [name, setName] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
+
+  const handleSignup = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+
+    const { data, error: signupError } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: {
+          full_name: name,
+        },
+      },
+    });
+
+    if (signupError) {
+      setError(signupError.message);
+      setLoading(false);
+    } else {
+      alert('Check your email for the confirmation link!');
+      router.push('/login');
+    }
+  };
+
   return (
     <>
       <Navbar />
@@ -18,7 +50,9 @@ export default function SignupPage() {
             <p>Create an account to start your journey</p>
           </div>
 
-          <form className={styles.form} onSubmit={(e) => e.preventDefault()}>
+          {error && <div style={{ color: '#ff4444', textAlign: 'center', fontSize: '0.9rem' }}>{error}</div>}
+
+          <form className={styles.form} onSubmit={handleSignup}>
             <div className={styles.inputGroup}>
               <label htmlFor="name">Full Name</label>
               <input 
@@ -27,6 +61,8 @@ export default function SignupPage() {
                 placeholder="John Doe" 
                 required 
                 className="glass"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
               />
             </div>
 
@@ -38,6 +74,8 @@ export default function SignupPage() {
                 placeholder="name@example.com" 
                 required 
                 className="glass"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
               />
             </div>
 
@@ -49,11 +87,18 @@ export default function SignupPage() {
                 placeholder="••••••••" 
                 required 
                 className="glass"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
               />
             </div>
 
-            <button type="submit" className="btn btn-primary" style={{ width: '100%', marginTop: '1rem' }}>
-              Create Account
+            <button 
+              type="submit" 
+              className="btn btn-primary" 
+              disabled={loading}
+              style={{ width: '100%', marginTop: '1rem' }}
+            >
+              {loading ? 'Creating Account...' : 'Create Account'}
             </button>
           </form>
 
@@ -65,3 +110,4 @@ export default function SignupPage() {
     </>
   );
 }
+

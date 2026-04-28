@@ -1,10 +1,37 @@
 'use client';
 
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Navbar from '@/components/Navbar';
+import { supabase } from '@/lib/supabase';
 import styles from './login.module.css';
 
 export default function LoginPage() {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+
+    const { error: loginError } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    if (loginError) {
+      setError(loginError.message);
+      setLoading(false);
+    } else {
+      router.push('/');
+    }
+  };
+
   return (
     <>
       <Navbar />
@@ -18,7 +45,9 @@ export default function LoginPage() {
             <p>Enter your credentials to access your account</p>
           </div>
 
-          <form className={styles.form} onSubmit={(e) => e.preventDefault()}>
+          {error && <div style={{ color: '#ff4444', textAlign: 'center', fontSize: '0.9rem' }}>{error}</div>}
+
+          <form className={styles.form} onSubmit={handleLogin}>
             <div className={styles.inputGroup}>
               <label htmlFor="email">Email Address</label>
               <input 
@@ -27,6 +56,8 @@ export default function LoginPage() {
                 placeholder="name@example.com" 
                 required 
                 className="glass"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
               />
             </div>
 
@@ -41,11 +72,18 @@ export default function LoginPage() {
                 placeholder="••••••••" 
                 required 
                 className="glass"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
               />
             </div>
 
-            <button type="submit" className="btn btn-primary" style={{ width: '100%', marginTop: '1rem' }}>
-              Sign In
+            <button 
+              type="submit" 
+              className="btn btn-primary" 
+              disabled={loading}
+              style={{ width: '100%', marginTop: '1rem' }}
+            >
+              {loading ? 'Signing in...' : 'Sign In'}
             </button>
           </form>
 
@@ -57,3 +95,4 @@ export default function LoginPage() {
     </>
   );
 }
+
