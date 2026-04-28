@@ -1,0 +1,166 @@
+.container {
+  padding-top: 8rem;
+  padding-bottom: 5rem;
+  min-height: 100vh;
+}
+
+.header {
+  margin-bottom: 3rem;
+}
+
+.badge {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--accent-2);
+  margin-bottom: 0.75rem;
+}
+
+.header h1 {
+  font-size: clamp(2rem, 5vw, 3rem);
+  margin-bottom: 0.5rem;
+}
+
+.email {
+  color: var(--text-secondary);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 3rem;
+}
+
+.card {
+  padding: 2rem;
+  border-radius: var(--radius-lg);
+}
+
+.card h3 {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 1rem;
+}
+
+.status {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  background: #10b981;
+  border-radius: 50%;
+  box-shadow: 0 0 10px #10b981;
+}
+
+.bigNumber {
+  font-size: 2.5rem;
+  font-weight: 800;
+  font-family: var(--font-display);
+}
+
+.ordersSection {
+  padding: 2.5rem;
+  border-radius: var(--radius-xl);
+}
+
+.ordersSection h2 {
+  font-size: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.empty {
+  text-align: center;
+  padding: 3rem 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.empty p {
+  color: var(--text-secondary);
+}
+
+.tableWrapper {
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.table th {
+  padding: 1rem;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  font-weight: 600;
+  border-bottom: 1px solid var(--border);
+}
+
+.table td {
+  padding: 1.25rem 1rem;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.95rem;
+}
+
+.productName {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.amount {
+  font-family: var(--font-display);
+  font-weight: 700;
+}
+
+.statusBadge {
+  padding: 0.35rem 0.75rem;
+  border-radius: 99px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.paid { background: rgba(16, 185, 129, 0.1); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.2); }
+.pending { background: rgba(245, 158, 11, 0.1); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.2); }
+
+.loading {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--border);
+  border-top-color: var(--accent-1);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@media (max-width: 768px) {
+  .ordersSection {
+    padding: 1.5rem;
+  }
+}

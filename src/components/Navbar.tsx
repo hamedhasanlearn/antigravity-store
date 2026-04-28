@@ -52,6 +52,7 @@ export default function Navbar() {
         <div className={styles.actions}>
           {user ? (
             <div className={styles.userSection}>
+              <a href="/dashboard" className={styles.link} style={{marginRight: '1rem'}}>Dashboard</a>
               <span className={styles.userEmail}>{user.email}</span>
               <button onClick={handleSignOut} className="btn btn-outline">Sign Out</button>
             </div>
