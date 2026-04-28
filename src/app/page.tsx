@@ -1,3 +1,5 @@
+'use client';
+
 import Navbar from '@/components/Navbar';
 import HeroSceneWrapper from '@/components/HeroSceneWrapper';
 import styles from './page.module.css';
@@ -38,12 +40,33 @@ const features = [
 
 /* ── Product cards data ─────────────────────────────────── */
 const products = [
-  { emoji: '🔮', name: 'Nebula Orb', price: '$129', tag: 'Bestseller' },
-  { emoji: '🛸', name: 'Gravity Disc', price: '$249', tag: 'New' },
-  { emoji: '🌀', name: 'Vortex Ring', price: '$89',  tag: 'Limited' },
+  { emoji: '🔮', name: 'Nebula Orb', price: 129, tag: 'Bestseller' },
+  { emoji: '🛸', name: 'Gravity Disc', price: 249, tag: 'New' },
+  { emoji: '🌀', name: 'Vortex Ring', price: 89,  tag: 'Limited' },
 ];
 
 export default function HomePage() {
+  const handlePurchase = async (product: any) => {
+    try {
+      const response = await fetch('/api/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          items: [{ name: product.name, price: product.price, quantity: 1 }],
+        }),
+      });
+
+      const { id, error } = await response.json();
+      if (error) throw new Error(error);
+
+      // Redirect to Stripe Checkout
+      const stripe = (await import('@stripe/stripe-js')).loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || '');
+      const stripeInstance = await stripe;
+      await stripeInstance?.redirectToCheckout({ sessionId: id });
+    } catch (err: any) {
+      alert(`Payment failed: ${err.message}. Make sure Stripe keys are set in .env.local!`);
+    }
+  };
   return (
     <>
       <Navbar />
@@ -145,8 +168,12 @@ export default function HomePage() {
                 <span className={styles.productTag}>{p.tag}</span>
                 <h3 className={styles.productName}>{p.name}</h3>
                 <div className={styles.productFooter}>
-                  <strong className={styles.productPrice}>{p.price}</strong>
-                  <button className="btn btn-primary" id={`buy-${p.name.toLowerCase().replace(/ /g,'-')}`}>
+                  <strong className={styles.productPrice}>${p.price}</strong>
+                  <button 
+                    className="btn btn-primary" 
+                    id={`buy-${p.name.toLowerCase().replace(/ /g,'-')}`}
+                    onClick={() => handlePurchase(p)}
+                  >
                     Buy Now
                   </button>
                 </div>
